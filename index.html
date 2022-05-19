@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="css/weui.css"/>
+    <link rel="stylesheet" href="css/weuix.css"/>
+
+    <script src="js/zepto.min.js"></script>
+    <script src="js/zepto.weui.js"></script>
+    <script src="js/aes/aes.js"></script>
+    <script src="js/aes/pad-zeropadding.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/data.js"></script>
+</head>
+
+<body>
+
+<div class="weui-btn_primary weui-header ">
+    <div class="weui-header-left"><a class="icon icon-109 f-white" href="index.html"></a></div>
+    <h1 class="weui-header-title">小说</h1>
+    <div class="weui-header-right"><a class="icon icon-22 f-white"></a></div>
+</div>
+<br>
+<div class="weui-cells" id="books-list"></div>
+<br>
+<div class="page-bd-15">
+    <div class='pager'>
+        <div class="pager-left">
+            <div class="pager-first"><a class="pager-nav" onclick="firstPage()">首页</a></div>
+            <div class="pager-pre"><a class="pager-nav" onclick="toPage(-1)">上一页</a></div>
+        </div>
+        <div class="pager-cen" id="page_show"></div>
+        <div class="pager-right">
+            <div class="pager-next"><a class="pager-nav" onclick="toPage(1)">下一页</a></div>
+            <div class="pager-end"><a class="pager-nav" onclick="endPage()">尾页</a></div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    let current = 1;
+    let size = 10;
+    let total = 0;
+    let pages = 0;
+
+    $(document).ready(function () {
+        if (!invalid()) {
+            window.location.href = 'login.html'
+        }
+        total = dataList.length;
+        pages = Math.ceil((total - 1) / size);
+        loadBook();
+    });
+
+    function loadBook() {
+        let html = '';
+        let start = (current - 1) * size;
+        let end = (start + size) > dataList.length ? dataList.length : start + size;
+        for (let i = start; i < end; i++) {
+            let book = dataList[i];
+
+            html += '<div class="weui-cell">';
+            html += '<div class="weui-cell__bd">';
+            html += '<p><a href="/views/' + book.id + '.html">' + decode(book.name) + '</a></p>';
+            html += '</div>';
+            html += '<div class="weui-cell__ft">' + book.postDate + '</div>';
+            html += '</div>';
+        }
+        $("#books-list").html(html);
+        $("#page_show").text(current + "/" + pages);
+    }
+
+    function toPage(page) {
+        current += page;
+        if (current < 1) {
+            current = 1;
+            return false;
+        } else if (current > pages) {
+            current = pages;
+            return false;
+        }
+        loadBook();
+    }
+
+    function firstPage() {
+        if (current == 1) {
+            return false;
+        }
+        current = 1;
+        loadBook();
+    }
+
+    function endPage() {
+        if (current == pages) {
+            return false;
+        }
+        current = pages;
+        loadBook();
+    }
+
+</script>
+</body>
+</html>
